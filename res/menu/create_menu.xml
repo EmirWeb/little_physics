@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+	<item android:id="@+id/eraser" android:title="Eraser"
+		android:icon="@drawable/eraser" />
+	<item android:id="@+id/reset" android:title="Reset" android:icon="@drawable/reset" />
+	<item android:id="@+id/save" android:title="Save" android:icon="@drawable/save" />
+	<item android:id="@+id/edit" android:title="Edit" android:icon="@drawable/edit" />
+</menu>

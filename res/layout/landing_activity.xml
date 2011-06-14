@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center"
+    android:background="@drawable/grass">
+    <TextView
+    	android:layout_width="wrap_content" 
+	    android:layout_height="wrap_content"
+	    android:textSize="40dp"
+	    android:textStyle="bold"
+	    android:text="Little Droid Creator"/>
+	<Button  
+		android:id="@+id/create_button"
+	    android:layout_width="wrap_content" 
+	    android:layout_height="wrap_content"
+	    android:text="Create"/>
+    <Button  
+    	android:id="@+id/load_button"
+	    android:layout_width="wrap_content" 
+	    android:layout_height="wrap_content"
+	    android:text="Load"/>
+    <Button  
+    	android:id="@+id/about_button"
+	    android:layout_width="wrap_content" 
+	    android:layout_height="wrap_content"
+	    android:text="About"/>
+</LinearLayout>
