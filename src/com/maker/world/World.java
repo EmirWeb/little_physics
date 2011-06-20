@@ -28,7 +28,7 @@ public class World implements JSONizable {
 	private int[] highlight = new int[] { 0, 0 };
 	private boolean hasHighLight;
 	private Movable[] touched = new Movable[2];
-	private boolean debuggable = true;
+	private boolean debuggable = false;
 	private long DEBUGGABL_TIME_CHANGE = 10;
 
 	public World(WinningListener listener) {
@@ -145,7 +145,7 @@ public class World implements JSONizable {
 		if (time == -1)
 			time = System.currentTimeMillis();
 		long currentTime = System.currentTimeMillis();
-		long timeChange = (time - currentTime) / 10;
+		long timeChange = (currentTime - time) / 10;
 
 		if (debuggable)
 			timeChange = DEBUGGABL_TIME_CHANGE;
@@ -185,7 +185,7 @@ public class World implements JSONizable {
 		int top = (int) boundingBox[2];
 		int bottom = (int) Math.ceil(boundingBox[3]);
 
-		if (Math.abs(left-right) > 9){
+		if (Math.abs(left - right) > 9) {
 			debug("yo");
 		}
 		boundingBox = object.getBoundingBox(directionVector);
@@ -224,13 +224,13 @@ public class World implements JSONizable {
 				if (h.size() == 1)
 					for (Collision c : h) {
 						accountedCollisions.add(c);
-						manageCollision(c);
+						manageCollision(c, (WorldObject) object);
 					}
 				else {
 					HashSet<float[]> points = new HashSet<float[]>();
 					for (Collision c : h) {
 						points.add(c.getIntersectionPoint());
-						manageCollision(c);
+						manageCollision(c, (WorldObject) object);
 					}
 					Collision considerCollision = null;
 					int pointCount = 0;
@@ -267,8 +267,6 @@ public class World implements JSONizable {
 					}
 				}
 			}
-			
-			
 
 			HashSet<float[]> reflectionVectors = new HashSet<float[]>();
 			int i = 0;
@@ -323,17 +321,17 @@ public class World implements JSONizable {
 		return radius > distanceWithoutVector && radius > distanceWithVector;
 	}
 
-	private void manageCollision(Collision c) {
+	private void manageCollision(Collision c, WorldObject w) {
 		WorldObject t = c.getObject();
 		if (t instanceof Terrain && ((Terrain) t).isBreakable())
 			removeObject((WorldObject) t);
 		if (t instanceof Terrain && ((Terrain) t).isWinning())
-			win();
+			win(w);
 	}
 
-	private void win() {
+	private void win(WorldObject w) {
 		if (listener != null) {
-			listener.win();
+			listener.win(w);
 			listener = null;
 		}
 	}
@@ -547,5 +545,10 @@ public class World implements JSONizable {
 
 	private void debug(String message) {
 		Logger.debug(getClass(), message);
+	}
+
+	private float getRatio(float timeChange) {
+		float ratio = ((float) timeChange) / ((float) 10000);
+		return ratio;
 	}
 }

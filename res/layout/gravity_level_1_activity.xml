@@ -3,16 +3,41 @@
 	android:layout_height="fill_parent"
 	android:orientation="vertical"
 	android:gravity="right">
-	<TextView
-		android:id="@+id/timer"
-		android:layout_margin="10dp"
-		android:layout_width="wrap_content" 
+	<LinearLayout
+		android:layout_width="fill_parent" 
 		android:layout_height="wrap_content"
-		android:text="00:00:00"/>
-	<Button
-		android:id="@+id/start_stop"
-		android:layout_margin="10dp"
-		android:layout_width="wrap_content" 
+		android:orientation="horizontal">
+		<TextView
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content"
+			android:text="Gravity"/>
+		<EditText
+			android:id="@+id/gravity"
+			android:layout_width="100dp" 
+			android:layout_height="wrap_content"
+			android:numeric="decimal"/>
+		<TextView
+			android:id="@+id/timer"
+			android:layout_margin="10dp"
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content"
+			android:text="00:00:00"/>
+	</LinearLayout>
+	<LinearLayout
+		android:layout_width="fill_parent" 
 		android:layout_height="wrap_content"
-		android:text="start"/>		
+		android:orientation="horizontal">
+		<Button
+			android:id="@+id/start_stop"
+			android:layout_margin="10dp"
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content"
+			android:text="start"/>
+		<Button
+			android:id="@+id/next"
+			android:layout_margin="10dp"
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content"
+			android:text="next"/>
+	</LinearLayout>
 </LinearLayout>

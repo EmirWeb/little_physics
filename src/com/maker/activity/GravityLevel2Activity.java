@@ -1,6 +1,5 @@
 package com.maker.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -14,12 +13,12 @@ import com.maker.Listeners.WinningListener;
 import com.maker.world.World;
 import com.maker.world.WorldObject;
 import com.maker.world.mobile.FallingObject;
-import com.maker.world.terrain.WinningTrigger;
+import com.maker.world.terrain.Crate;
 
-public class GravityLevel1Activity extends GameActivity {
+public class GravityLevel2Activity extends GameActivity {
 
 	private boolean animating;
-	private long startTime;
+	private float distance;
 	private TextView timer;
 	private Button startStop;
 	private Button next;
@@ -41,7 +40,6 @@ public class GravityLevel1Activity extends GameActivity {
 		next.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				startActivity(new Intent(GravityLevel1Activity.this, GravityLevel2Activity.class));
 			}
 		});
 
@@ -59,7 +57,6 @@ public class GravityLevel1Activity extends GameActivity {
 
 					World world = getWorld(gravityFloat);
 					setWorld(world);
-					startTime = System.currentTimeMillis();
 					startStop.setText("Stop");
 					setAnimate(animating);
 				} else
@@ -80,7 +77,7 @@ public class GravityLevel1Activity extends GameActivity {
 		if (gString.equals(""))
 			gString = "0";
 		float gravityFloat = Float.parseFloat(gString);
-
+		
 		World world = getWorld(gravityFloat);
 		setWorld(world);
 
@@ -88,25 +85,31 @@ public class GravityLevel1Activity extends GameActivity {
 
 	private World getWorld(float gravity) {
 		World world = new World();
-		for (int i = -5; i < 5; i++) {
-			WinningTrigger crate = new WinningTrigger(i, -8);
+		for (int i = -15; i < 150; i++) {
+			Crate crate = new Crate(i, -8);
 			world.add(crate);
 		}
+		final float startx = -10;
+		final float starty = -7;
 
-		FallingObject fallingObject = new FallingObject(gravity, new float[] { 0, 0 }, new float[]{0,0});
+		FallingObject fallingObject = new FallingObject(gravity, new float[] { startx, starty }, new float[] { 0.05f, 0.05f });
 		world.add(fallingObject);
 		world.setWinningListener(new WinningListener() {
 
 			@Override
-			public void win(WorldObject w) {
+			public void win(final WorldObject worldObject) {
 				runOnUiThread(new Runnable() {
+					
+
 					@Override
 					public void run() {
-						long time = (System.currentTimeMillis() - startTime);
-						long milliseconds = time % 1000 / 10;
-						long seconds = time / 1000;
-						timer.setText(seconds + ":" + milliseconds);
-
+						
+						float[] pos = worldObject.getPosition().clone();
+						pos[0] -= startx;
+						pos[1] -= starty;
+						
+						distance = pos[0];
+						timer.setText("distance: " + distance);
 						stop();
 					}
 				});
@@ -115,4 +118,5 @@ public class GravityLevel1Activity extends GameActivity {
 
 		return world;
 	}
+
 }

@@ -13,17 +13,20 @@ import com.maker.world.WorldObject;
 
 public class FallingObject implements WorldObject, Mobile, JSONizable {
 
-	private float mass = 0.1f;
 	private float[] position = new float[] { 0, 0 };
 	private Line[] lines;
 	private float[] directionVector = new float[] { 0, 0 };
 	private int id;
 	private final float frame = 10000;
 	private float lastInterval = -1;
-	private final float gravity = -9.8f;
+	private float gravity;
 
-	public FallingObject(float[] position) {
+	public FallingObject(float gravity, float[] position, float[] fs) {
+		if (gravity > 0)
+			gravity = -gravity;
+		this.gravity = gravity;
 		this.position = position;
+		directionVector = fs;
 		lines = getLines();
 	}
 
@@ -59,7 +62,7 @@ public class FallingObject implements WorldObject, Mobile, JSONizable {
 
 	@Override
 	public WorldObject New(float x, float y) {
-		FallingObject fallingObject = new FallingObject(new float[] { x, y });
+		FallingObject fallingObject = new FallingObject(gravity, new float[] { x, y }, directionVector.clone());
 		return fallingObject;
 	}
 
@@ -170,7 +173,7 @@ public class FallingObject implements WorldObject, Mobile, JSONizable {
 	public float[] getDirectionVector(long timeChange) {
 		lastInterval = timeChange;
 		float ratio = getRatio(timeChange);
-		directionVector[1] += mass * gravity * ratio;
+		directionVector[1] += gravity * ratio;
 		return directionVector;
 	}
 

@@ -6,6 +6,7 @@ import android.widget.Toast;
 import com.maker.Global;
 import com.maker.Listeners.WinningListener;
 import com.maker.world.World;
+import com.maker.world.WorldObject;
 
 public class PlayGameActivity extends GameActivity {
 	World world = Global.getLoadingGame();
@@ -13,7 +14,7 @@ public class PlayGameActivity extends GameActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		world.setWinningListener(new WinningListener() {
 			@Override
-			public void win() {
+			public void win(WorldObject w) {
 				runOnUiThread(new Runnable() {
 					@Override
 					public void run() {

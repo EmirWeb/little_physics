@@ -325,4 +325,12 @@ public class UTMRenderer implements Renderer {
 	public boolean isMoving() {
 		return moving;
 	}
+	public void setAnimate(boolean animate){
+		this.animate = animate;
+	}
+
+	public void setWorld(World world) {
+		this.world = world;
+		
+	}
 }

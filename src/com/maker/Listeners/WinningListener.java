@@ -1,5 +1,7 @@
 package com.maker.Listeners;
 
+import com.maker.world.WorldObject;
+
 public interface WinningListener {
-	void win();
+	void win(WorldObject worldObject);
 }

@@ -31,6 +31,10 @@ public class GameActivity extends Activity {
 		initialize(false);
 	}
 
+	protected void setAnimate (boolean animate){
+		renderer.setAnimate(animate);
+	}
+	
 	protected void onCreate(Bundle savedInstanceState, boolean animate) {
 		super.onCreate(savedInstanceState);
 		initialize(animate);
@@ -53,6 +57,8 @@ public class GameActivity extends Activity {
 			world = new World(null);
 
 		this.world = world;
+		if (renderer != null)
+			renderer.setWorld(world);
 	}
 
 	private Bitmap[] loadBitmaps(int[] ids) {
