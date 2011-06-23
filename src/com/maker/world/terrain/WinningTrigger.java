@@ -3,7 +3,7 @@ package com.maker.world.terrain;
 import com.maker.R;
 import com.maker.world.WorldObject;
 
-public class WinningTrigger extends Crate{
+public class WinningTrigger extends Crate {
 
 	public WinningTrigger(float x, float y) {
 		super((int) x, (int) y);

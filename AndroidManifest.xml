@@ -11,6 +11,9 @@
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
+		<activity android:name=".activity.GravityLevel3Activity"
+			android:label="@string/app_name" android:screenOrientation="landscape"
+			android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
 		<activity android:name=".activity.GravityLevel2Activity"
 			android:label="@string/app_name" android:screenOrientation="landscape"
 			android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
@@ -40,6 +43,6 @@
 			android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
 
 	</application>
-	<uses-sdk android:minSdkVersion="8" />
+	<uses-sdk android:minSdkVersion="6" />
 
 </manifest> 

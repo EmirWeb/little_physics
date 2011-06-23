@@ -144,6 +144,7 @@ public class World implements JSONizable {
 
 		if (time == -1)
 			time = System.currentTimeMillis();
+		
 		long currentTime = System.currentTimeMillis();
 		long timeChange = (currentTime - time) / 10;
 
@@ -153,7 +154,7 @@ public class World implements JSONizable {
 		time = currentTime;
 
 		for (Mobile mobile : mobileObjects) {
-			float[] directionVector = mobile.getDirectionVector(timeChange);
+			float[] directionVector = mobile.getDirectionVector(timeChange);			
 			checkCollision(mobile, directionVector, gravity);
 			addToGrid(mobile);
 		}

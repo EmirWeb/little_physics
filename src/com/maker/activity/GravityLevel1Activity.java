@@ -23,18 +23,31 @@ public class GravityLevel1Activity extends GameActivity {
 	private TextView timer;
 	private Button startStop;
 	private Button next;
-	private EditText gravity;
+	private EditText height;
+	
+	public static final float INITIAL_HEIGHT = 0;
+	public static final float MAX_HEIGHT = 15;
+	
+	public static final float EARTH_GRAVITY = -9.8f;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		World world = getWorld(-9.8f);
+		World world = getWorld(INITIAL_HEIGHT);
 		setWorld(world);
 
 		super.onCreate(savedInstanceState, false);
 
 		View view = getLayoutInflater().inflate(R.layout.gravity_level_1_activity, null, false);
+		
+		TextView description = (TextView) view.findViewById(R.id.description);
+		description.setText("Drop the anvil on the roadrunner. The height interval is [0, 15].");
+		
+		TextView title = (TextView) view.findViewById(R.id.input_title);
+		title.setText("Height");
+		
 		timer = (TextView) view.findViewById(R.id.timer);
-		gravity = (EditText) view.findViewById(R.id.gravity);
+		height = (EditText) view.findViewById(R.id.user_input);
+		height.setText(String.valueOf(INITIAL_HEIGHT));
 
 		startStop = (Button) view.findViewById(R.id.start_stop);
 		next = (Button) view.findViewById(R.id.next);
@@ -52,12 +65,12 @@ public class GravityLevel1Activity extends GameActivity {
 				animating = !animating;
 
 				if (animating) {
-					String gString = gravity.getText().toString();
-					if (gString.equals(""))
-						gString = "0";
-					float gravityFloat = Float.parseFloat(gString);
+					String hString = height.getText().toString();
+					if (hString.equals(""))
+						hString = "0";
+					float heightFloat = Float.parseFloat(hString);
 
-					World world = getWorld(gravityFloat);
+					World world = getWorld(heightFloat);
 					setWorld(world);
 					startTime = System.currentTimeMillis();
 					startStop.setText("Stop");
@@ -76,25 +89,30 @@ public class GravityLevel1Activity extends GameActivity {
 		setAnimate(animating);
 
 		startStop.setText("Start");
-		String gString = gravity.getText().toString();
-		if (gString.equals(""))
-			gString = "0";
-		float gravityFloat = Float.parseFloat(gString);
+		String hString = height.getText().toString();
+		if (hString.equals(""))
+			hString = "0";
+		float heightFloat = Float.parseFloat(hString);
 
-		World world = getWorld(gravityFloat);
+		World world = getWorld(heightFloat);
 		setWorld(world);
 
 	}
 
-	private World getWorld(float gravity) {
+	private World getWorld(float height) {	
+		height = userToWorldHeight(height);
+		
 		World world = new World();
 		for (int i = -5; i < 5; i++) {
 			WinningTrigger crate = new WinningTrigger(i, -8);
 			world.add(crate);
-		}
-
-		FallingObject fallingObject = new FallingObject(gravity, new float[] { 0, 0 }, new float[]{0,0});
-		world.add(fallingObject);
+		}		
+		
+		FallingObject coyote = new FallingObject(EARTH_GRAVITY, new float[] { 3, height }, new float[]{0,0});
+		FallingObject roadRunner = new FallingObject(0, new float[] { -5, -6 }, new float[]{.2f,0});
+		world.add(coyote);
+		world.add(roadRunner);
+		
 		world.setWinningListener(new WinningListener() {
 
 			@Override
@@ -114,5 +132,16 @@ public class GravityLevel1Activity extends GameActivity {
 		});
 
 		return world;
+	}
+	
+	// The user will assume the crates at the bottom is height 0 for the user, this accounts for that
+	private float userToWorldHeight(float height) {
+		float newHeight = height;
+		if (newHeight > MAX_HEIGHT)
+			newHeight = MAX_HEIGHT;
+		
+		newHeight = newHeight - 7;
+		
+		return newHeight;
 	}
 }
