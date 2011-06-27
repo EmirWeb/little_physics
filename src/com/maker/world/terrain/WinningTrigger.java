@@ -5,6 +5,8 @@ import com.maker.world.WorldObject;
 
 public class WinningTrigger extends Crate {
 
+	private int imageId = 17;
+
 	public WinningTrigger(float x, float y) {
 		super((int) x, (int) y);
 	}
@@ -15,7 +17,7 @@ public class WinningTrigger extends Crate {
 	
 	@Override
 	public int getTexture() {
-		return 4;
+		return imageId;
 	}
 
 	@Override
@@ -36,6 +38,10 @@ public class WinningTrigger extends Crate {
 	@Override
 	public boolean isWinning() {
 		return true;
+	}
+
+	public void setImageId(int i) {
+		imageId = i;
 	}
 
 }

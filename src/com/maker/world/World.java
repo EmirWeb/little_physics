@@ -545,7 +545,8 @@ public class World implements JSONizable {
 	}
 
 	private void debug(String message) {
-		Logger.debug(getClass(), message);
+		if (debuggable)
+			Logger.debug(getClass(), message);
 	}
 
 	private float getRatio(float timeChange) {

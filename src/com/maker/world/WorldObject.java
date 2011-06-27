@@ -4,6 +4,10 @@ import com.maker.geometry.Line;
 
 public interface WorldObject {
 
+	String getWaterMark();
+	
+	void setWaterMark(String waterMark);
+	
 	float[] getCenter();
 	
 	float getRadius();

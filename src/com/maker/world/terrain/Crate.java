@@ -18,6 +18,8 @@ public class Crate implements WorldObject, Terrain, JSONizable {
 
 	private int id = -1;
 
+	private String waterMark;
+
 	public Crate(int x, int y) {
 		coords = new int[] { x, y };
 
@@ -138,5 +140,15 @@ public class Crate implements WorldObject, Terrain, JSONizable {
 	@Override
 	public float getRadius() {
 		return 1.5f;
+	}
+	
+	@Override
+	public String getWaterMark() {
+		return waterMark;
+	}
+
+	@Override
+	public void setWaterMark(String waterMark) {
+		this.waterMark = waterMark;
 	}
 }

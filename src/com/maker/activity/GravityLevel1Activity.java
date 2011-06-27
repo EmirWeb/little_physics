@@ -8,26 +8,25 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.maker.R;
 import com.maker.Listeners.WinningListener;
+import com.maker.world.Generic;
 import com.maker.world.World;
 import com.maker.world.WorldObject;
-import com.maker.world.mobile.FallingObject;
 import com.maker.world.terrain.WinningTrigger;
 
 public class GravityLevel1Activity extends GameActivity {
 
 	private boolean animating;
-	private long startTime;
-	private TextView timer;
 	private Button startStop;
 	private Button next;
 	private EditText height;
-	
+
 	public static final float INITIAL_HEIGHT = 0;
 	public static final float MAX_HEIGHT = 15;
-	
+
 	public static final float EARTH_GRAVITY = -9.8f;
 
 	@Override
@@ -38,14 +37,13 @@ public class GravityLevel1Activity extends GameActivity {
 		super.onCreate(savedInstanceState, false);
 
 		View view = getLayoutInflater().inflate(R.layout.gravity_level_1_activity, null, false);
-		
+
 		TextView description = (TextView) view.findViewById(R.id.description);
 		description.setText("Drop the anvil on the roadrunner. The height interval is [0, 15].");
-		
+
 		TextView title = (TextView) view.findViewById(R.id.input_title);
 		title.setText("Height");
-		
-		timer = (TextView) view.findViewById(R.id.timer);
+
 		height = (EditText) view.findViewById(R.id.user_input);
 		height.setText(String.valueOf(INITIAL_HEIGHT));
 
@@ -72,7 +70,6 @@ public class GravityLevel1Activity extends GameActivity {
 
 					World world = getWorld(heightFloat);
 					setWorld(world);
-					startTime = System.currentTimeMillis();
 					startStop.setText("Stop");
 					setAnimate(animating);
 				} else
@@ -99,31 +96,44 @@ public class GravityLevel1Activity extends GameActivity {
 
 	}
 
-	private World getWorld(float height) {	
+	private World getWorld(float height) {
 		height = userToWorldHeight(height);
-		
+
 		World world = new World();
-		for (int i = -5; i < 5; i++) {
+		for (int i = -15; i < 150; i++) {
 			WinningTrigger crate = new WinningTrigger(i, -8);
+			crate.setWaterMark("crate");
 			world.add(crate);
-		}		
+		}
+
+		Generic anvil = new Generic(EARTH_GRAVITY, new float[] { 3, height }, new float[] { 0, 0 });
+		anvil.setImageId(15);
+		anvil.setWaterMark("ANVIL");
 		
-		FallingObject coyote = new FallingObject(EARTH_GRAVITY, new float[] { 3, height }, new float[]{0,0});
-		FallingObject roadRunner = new FallingObject(0, new float[] { -5, -6 }, new float[]{.2f,0});
+		Generic roadRunner = new Generic(0, new float[] { -10, userToWorldHeight(0.1f) }, new float[] { .2f, 0 });
+		roadRunner.setImageId(16);
+		world.add(anvil);
+		
+		Generic coyote = new Generic(0, new float[] { 4, height }, new float[] { 0, 0 });
+		coyote.setImageId(14);
+		coyote.setWaterMark("COYOTE");
 		world.add(coyote);
-		world.add(roadRunner);
 		
+		roadRunner.setWaterMark("ROAD RUNNER");
+		world.add(roadRunner);
+
 		world.setWinningListener(new WinningListener() {
 
 			@Override
-			public void win(WorldObject w) {
+			public void win(final WorldObject w) {
 				runOnUiThread(new Runnable() {
 					@Override
 					public void run() {
-						long time = (System.currentTimeMillis() - startTime);
-						long milliseconds = time % 1000 / 10;
-						long seconds = time / 1000;
-						timer.setText(seconds + ":" + milliseconds);
+						String waterMark = w.getWaterMark();
+						if (waterMark.equals("ROAD RUNNER"))
+							Toast.makeText(getApplicationContext(), "dead", Toast.LENGTH_SHORT).show();
+						else
+							Toast.makeText(getApplicationContext(), "FAil", Toast.LENGTH_SHORT).show();
 
 						stop();
 					}
@@ -133,15 +143,16 @@ public class GravityLevel1Activity extends GameActivity {
 
 		return world;
 	}
-	
-	// The user will assume the crates at the bottom is height 0 for the user, this accounts for that
+
+	// The user will assume the crates at the bottom is height 0 for the user,
+	// this accounts for that
 	private float userToWorldHeight(float height) {
 		float newHeight = height;
 		if (newHeight > MAX_HEIGHT)
 			newHeight = MAX_HEIGHT;
-		
+
 		newHeight = newHeight - 7;
-		
+
 		return newHeight;
 	}
 }

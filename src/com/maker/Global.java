@@ -5,7 +5,8 @@ import com.maker.world.WorldObject;
 
 public class Global {
 	public static final int[] ids = { R.drawable.penguin, R.drawable.crate, R.drawable.brick, R.drawable.highlight, R.drawable.red_highlight, R.drawable.paddle, R.drawable.blue_monster,
-			R.drawable.cactus, R.drawable.earth, R.drawable.fire, R.drawable.heart, R.drawable.megaman, R.drawable.question_mark, R.drawable.red_circle };
+			R.drawable.cactus, R.drawable.earth, R.drawable.fire, R.drawable.heart, R.drawable.megaman, R.drawable.question_mark, R.drawable.red_circle, R.drawable.coyote, R.drawable.anvil,
+			R.drawable.road_runner, R.drawable.dirt, R.drawable.cannon_ball };
 
 	private static WorldObject editingObject;
 	private static World savingWorld;

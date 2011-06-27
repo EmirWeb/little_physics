@@ -1,6 +1,5 @@
 package com.maker.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -11,10 +10,9 @@ import android.widget.TextView;
 
 import com.maker.R;
 import com.maker.Listeners.WinningListener;
+import com.maker.world.Generic;
 import com.maker.world.World;
 import com.maker.world.WorldObject;
-import com.maker.world.mobile.FallingObject;
-import com.maker.world.terrain.Crate;
 import com.maker.world.terrain.WinningTrigger;
 
 public class GravityLevel2Activity extends GameActivity {
@@ -56,7 +54,7 @@ public class GravityLevel2Activity extends GameActivity {
 		next.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				startActivity(new Intent(GravityLevel2Activity.this, GravityLevel3Activity.class));
+//				startActivity(new Intent(GravityLevel2Activity.this, GravityLevel3Activity.class));
 			}
 		});
 
@@ -106,7 +104,7 @@ public class GravityLevel2Activity extends GameActivity {
 		
 		World world = new World();
 		for (int i = -15; i < 150; i++) {
-			Crate crate = new Crate(i, -8);
+			WinningTrigger crate = new WinningTrigger(i, -8);
 			world.add(crate);
 		}
 		final float startx = -10;
@@ -116,10 +114,12 @@ public class GravityLevel2Activity extends GameActivity {
 		float xPower = (float) (power * Math.cos(Math.toRadians(angle)));
 		float yPower = (float) (power * Math.sin(Math.toRadians(angle)));
 		
-		FallingObject fallingObject = new FallingObject(EARTH_GRAVITY, new float[] { startx, starty }, new float[] { xPower, yPower });		
+		Generic fallingObject = new Generic(EARTH_GRAVITY, new float[] { startx, starty }, new float[] { xPower, yPower });
+		fallingObject.setImageId(18);
 		world.add(fallingObject);
 		
 		WinningTrigger target = new WinningTrigger(6,-7);
+		target.setImageId(19);
 		world.add(target);
 		
 		world.setWinningListener(new WinningListener() {

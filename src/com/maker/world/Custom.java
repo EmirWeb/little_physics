@@ -8,6 +8,7 @@ import com.maker.geometry.Line;
 public class Custom implements WorldObject, Serializable{
 
 	private int id = -1;
+	private String waterMark;
 	
 	@Override
 	public float[] getPosition() {
@@ -74,5 +75,15 @@ public class Custom implements WorldObject, Serializable{
 	public float getRadius() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+	
+	@Override
+	public String getWaterMark() {
+		return waterMark;
+	}
+
+	@Override
+	public void setWaterMark(String waterMark) {
+		this.waterMark = waterMark;
 	}
 }

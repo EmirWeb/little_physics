@@ -1,18 +1,14 @@
-package com.maker.world.mobile;
+package com.maker.world;
 
 import org.json.JSONObject;
 
-import com.maker.Logger;
 import com.maker.R;
 import com.maker.geometry.Line;
 import com.maker.utilities.Algebra;
 import com.maker.utilities.linkedlist.JSONizable;
-import com.maker.world.Collision;
-import com.maker.world.Mobile;
-import com.maker.world.WorldObject;
+import com.maker.world.mobile.FallingObject;
 
-public class FallingObject implements WorldObject, Mobile, JSONizable {
-
+public class Generic implements WorldObject, Terrain, Mobile, JSONizable {
 	private float[] position = new float[] { 0, 0 };
 	private Line[] lines;
 	private float[] directionVector = new float[] { 0, 0 };
@@ -20,9 +16,14 @@ public class FallingObject implements WorldObject, Mobile, JSONizable {
 	private final float frame = 10000;
 	private float lastInterval = -1;
 	private float gravity;
+	private int imageId = 0;
 	private String waterMark;
+	
+	public void setImageId(int imageId){
+		this.imageId = imageId;
+	}
 
-	public FallingObject(float gravity, float[] position, float[] fs) {
+	public Generic(float gravity, float[] position, float[] fs) {
 		if (gravity > 0)
 			gravity = -gravity;
 		this.gravity = gravity;
@@ -48,7 +49,7 @@ public class FallingObject implements WorldObject, Mobile, JSONizable {
 
 	@Override
 	public int getTexture() {
-		return 1;
+		return imageId;
 	}
 
 	@Override
@@ -208,6 +209,21 @@ public class FallingObject implements WorldObject, Mobile, JSONizable {
 	}
 
 	@Override
+	public boolean isWinning() {
+		return true;
+	}
+
+	@Override
+	public boolean isBreakable() {
+		return false;
+	}
+
+	@Override
+	public int[] getCoords() {
+		return new int[] { (int) position[0], (int) position[1] };
+	}
+
+	@Override
 	public String getWaterMark() {
 		return waterMark;
 	}
@@ -216,4 +232,5 @@ public class FallingObject implements WorldObject, Mobile, JSONizable {
 	public void setWaterMark(String waterMark) {
 		this.waterMark = waterMark;
 	}
+
 }

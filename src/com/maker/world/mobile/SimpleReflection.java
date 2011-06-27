@@ -26,6 +26,8 @@ public class SimpleReflection implements WorldObject, Mobile, JSONizable {
 	private float interval;
 	private float magnitude;
 
+	private String waterMark;
+
 	public SimpleReflection(float[] currentPosition, float[] velocity) {
 		this.position = currentPosition;
 		this.directionVector = new float[] { velocity[0], velocity[1] };
@@ -263,6 +265,16 @@ public class SimpleReflection implements WorldObject, Mobile, JSONizable {
 	@Override
 	public float getRadius() {
 		return 1.5f;
+	}
+	
+	@Override
+	public String getWaterMark() {
+		return waterMark;
+	}
+
+	@Override
+	public void setWaterMark(String waterMark) {
+		this.waterMark = waterMark;
 	}
 
 }

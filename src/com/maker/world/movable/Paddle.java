@@ -20,6 +20,7 @@ public class Paddle implements Movable, WorldObject, Mobile, JSONizable {
 	private float[] position;
 	private float[] touch;
 	private Line[] lines;
+	private String waterMark;
 
 	public Paddle(float x, float y) {
 		position = new float[] { x, y };
@@ -198,5 +199,14 @@ public class Paddle implements Movable, WorldObject, Mobile, JSONizable {
 	public float getRadius() {
 		return 1.5f;
 	}
-	
+
+	@Override
+	public String getWaterMark() {
+		return waterMark;
+	}
+
+	@Override
+	public void setWaterMark(String waterMark) {
+		this.waterMark = waterMark;
+	}	
 }
