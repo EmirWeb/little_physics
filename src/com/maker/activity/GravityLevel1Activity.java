@@ -25,7 +25,7 @@ public class GravityLevel1Activity extends GameActivity {
 	private EditText height;
 
 	public static final float INITIAL_HEIGHT = 0;
-	public static final float MAX_HEIGHT = 15;
+	public static final float MAX_HEIGHT = 20;
 
 	public static final float EARTH_GRAVITY = -9.8f;
 
@@ -39,7 +39,7 @@ public class GravityLevel1Activity extends GameActivity {
 		View view = getLayoutInflater().inflate(R.layout.gravity_level_1_activity, null, false);
 
 		TextView description = (TextView) view.findViewById(R.id.description);
-		description.setText("Drop the anvil on the roadrunner. The height interval is [0, 15].");
+		description.setText("The coyote is 13 units away from the roadrunner. If the roadrunner is running at 8 units per second, from what height should the coyote drop the anvil from? height: [0, 20].");
 
 		TextView title = (TextView) view.findViewById(R.id.input_title);
 		title.setText("Height");
@@ -110,7 +110,7 @@ public class GravityLevel1Activity extends GameActivity {
 		anvil.setImageId(15);
 		anvil.setWaterMark("ANVIL");
 		
-		Generic roadRunner = new Generic(0, new float[] { -10, userToWorldHeight(0.1f) }, new float[] { .2f, 0 });
+		Generic roadRunner = new Generic(0, new float[] { -10, userToWorldHeight(0.1f) }, new float[] { 8f, 0 });
 		roadRunner.setImageId(16);
 		world.add(anvil);
 		

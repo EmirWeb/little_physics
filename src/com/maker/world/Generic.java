@@ -13,7 +13,7 @@ public class Generic implements WorldObject, Terrain, Mobile, JSONizable {
 	private Line[] lines;
 	private float[] directionVector = new float[] { 0, 0 };
 	private int id;
-	private final float frame = 10000;
+	private final float frame = 500;
 	private float lastInterval = -1;
 	private float gravity;
 	private int imageId = 0;
@@ -176,7 +176,8 @@ public class Generic implements WorldObject, Terrain, Mobile, JSONizable {
 		lastInterval = timeChange;
 		float ratio = getRatio(timeChange);
 		directionVector[1] += gravity * ratio;
-		return directionVector;
+				
+		return Algebra.multiplyVectorByConstant(directionVector, ratio);
 	}
 
 	@Override

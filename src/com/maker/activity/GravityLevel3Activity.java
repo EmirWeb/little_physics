@@ -7,13 +7,16 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.maker.R;
 import com.maker.Listeners.WinningListener;
+import com.maker.world.Generic;
 import com.maker.world.World;
 import com.maker.world.WorldObject;
 import com.maker.world.mobile.FallingObject;
 import com.maker.world.terrain.Crate;
+import com.maker.world.terrain.WinningTrigger;
 
 public class GravityLevel3Activity extends GameActivity {
 
@@ -40,7 +43,7 @@ public class GravityLevel3Activity extends GameActivity {
 		View view = getLayoutInflater().inflate(R.layout.gravity_level_1_activity, null, false);
 		
 		TextView description = (TextView) view.findViewById(R.id.description);
-		description.setText("Try to get the arrow through the falling apple. The angle interval is [0, 90].");
+		description.setText("An apple 22 units away from you is falling from a height of 15 units. If you shoot the arrow at an initial speed of 20 units per second, at what angle do you need to fire the arrow? (How relevant is the initial speed of the arrow?). angle: [0, 90].");
 		
 		TextView title = (TextView) view.findViewById(R.id.input_title);
 		title.setText("Angle");
@@ -103,43 +106,61 @@ public class GravityLevel3Activity extends GameActivity {
 		
 		World world = new World();
 		for (int i = -15; i < 150; i++) {
-			Crate crate = new Crate(i, -8);
+			WinningTrigger crate = new WinningTrigger(i, -8);
+			crate.setWaterMark("crate");
 			world.add(crate);
 		}
 		
 		final float startx = -10;
 		final float starty = -7;
 		
-		final float fallingStartx = 6;
-		final float fallingStarty = 7;
+		final float fallingStartx = 12;
+		final float fallingStarty = 8;
 		
-		final float power = 1f;
+		final float velocity = 20f;
 
-		float xPower = (float) (power * Math.cos(Math.toRadians(angle)));
-		float yPower = (float) (power * Math.sin(Math.toRadians(angle)));
+		float xVel = (float) (velocity * Math.cos(Math.toRadians(angle)));
+		float yVel = (float) (velocity * Math.sin(Math.toRadians(angle)));
 		
-		FallingObject fallingObject = new FallingObject(EARTH_GRAVITY, new float[] { startx, starty }, new float[] { xPower, yPower });		
-		world.add(fallingObject);
+		Generic arrow = new Generic(EARTH_GRAVITY, new float[] { startx, starty }, new float[] { xVel, yVel });
+		arrow.setImageId(20);
+		arrow.setWaterMark("ARROW");
+		world.add(arrow);
 		
-		FallingObject target = new FallingObject(EARTH_GRAVITY, new float[] { fallingStartx, fallingStarty }, new float[] { 0, 0 });
-		world.add(target);
+		Generic bow = new Generic(0, new float[] { startx - 1, starty }, new float[] { 0, 0 });
+		bow.setImageId(21);
+		world.add(bow);
+		
+		Generic apple = new Generic(EARTH_GRAVITY, new float[] { fallingStartx, fallingStarty }, new float[] { 0, 0 });
+		apple.setImageId(19);
+		apple.setWaterMark("APPLE");
+		world.add(apple);
 		
 		world.setWinningListener(new WinningListener() {
 
 			@Override
-			public void win(final WorldObject worldObject) {
+			public void win(final WorldObject w) {
 				runOnUiThread(new Runnable() {
 					
 
 					@Override
 					public void run() {
-						
-						float[] pos = worldObject.getPosition().clone();
+						float[] pos = w.getPosition().clone();
 						pos[0] -= startx;
 						pos[1] -= starty;
 						
 						distance = pos[0];
 						timer.setText("distance: " + distance);
+
+						
+						String waterMark = w.getWaterMark();							
+						if (waterMark.equals("APPLE"))
+							Toast.makeText(getApplicationContext(), "GOT IT!", Toast.LENGTH_SHORT).show();
+						else
+							Toast.makeText(getApplicationContext(), "FAil", Toast.LENGTH_SHORT).show();
+
+						
+						
 						stop();
 					}
 				});
