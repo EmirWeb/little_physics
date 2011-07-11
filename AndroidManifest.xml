@@ -3,7 +3,7 @@
 	package="com.maker" android:versionCode="1" android:versionName="1.0">
 	<application android:icon="@drawable/icon" android:label="@string/app_name"
 		android:debuggable="TRUE">
-		<activity android:name=".activity.GravityLevel1Activity"
+		<activity android:name=".activity.SplashScreenActivity"
 			android:label="@string/app_name" android:screenOrientation="landscape"
 			android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
 			<intent-filter>
@@ -12,6 +12,9 @@
 			</intent-filter>
 		</activity>
 		<activity android:name=".activity.GravityLevel3Activity"
+			android:label="@string/app_name" android:screenOrientation="landscape"
+			android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
+			<activity android:name=".activity.GravityLevel1Activity"
 			android:label="@string/app_name" android:screenOrientation="landscape"
 			android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
 		<activity android:name=".activity.GravityLevel2Activity"

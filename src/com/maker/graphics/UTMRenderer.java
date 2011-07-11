@@ -35,6 +35,7 @@ public class UTMRenderer implements Renderer {
 	private long draw;
 	private long build;
 	private long full;
+	private int backgroundTexture = -1;
 
 	public UTMRenderer(Bitmap[] bitmaps, World world, boolean animate) {
 		this.world = world;
@@ -72,10 +73,22 @@ public class UTMRenderer implements Renderer {
 			bitmaps = null;
 		}
 
+		if (backgroundTexture != -1) {
+			gl.glPushMatrix();
+			{
+				gl.glScalef(9.0f, 9.0f, 0.4f);
+				gl.glTranslatef(-.5f, -.5f, depth + 5);
+				int textureId = textures.get(backgroundTexture);
+				polygon.draw(gl, textureId);
+			}
+			gl.glPopMatrix();
+		}
+
 		gl.glLoadIdentity();
 		for (WorldObject object : frame) {
-			float x = object.getPosition()[0];
-			float y = object.getPosition()[1];
+			float[] position = object.getPosition();
+			float x = position[0];
+			float y = position[1];
 			gl.glPushMatrix();
 			{
 				gl.glTranslatef(x, y, depth);
@@ -170,6 +183,8 @@ public class UTMRenderer implements Renderer {
 		gl.glClearColor(0.0f, 0.0f, 0.0f, 0.5f);
 		gl.glShadeModel(GL10.GL_SMOOTH);
 		gl.glClearDepthf(1.0f);
+		gl.glEnable(GL10.GL_BLEND);
+		gl.glBlendFunc(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		gl.glDisable(GL10.GL_DEPTH_TEST);
 		gl.glDepthFunc(GL10.GL_LEQUAL);
 		gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_NICEST);
@@ -325,12 +340,17 @@ public class UTMRenderer implements Renderer {
 	public boolean isMoving() {
 		return moving;
 	}
-	public void setAnimate(boolean animate){
+
+	public void setAnimate(boolean animate) {
 		this.animate = animate;
 	}
 
 	public void setWorld(World world) {
 		this.world = world;
-		
+
+	}
+
+	public void setBackgroundTexture(int backgroundTexture) {
+		this.backgroundTexture = backgroundTexture;
 	}
 }

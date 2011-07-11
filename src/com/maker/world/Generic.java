@@ -13,11 +13,13 @@ public class Generic implements WorldObject, Terrain, Mobile, JSONizable {
 	private Line[] lines;
 	private float[] directionVector = new float[] { 0, 0 };
 	private int id;
-	private final float frame = 500;
+	private final float frame = 1000;
 	private float lastInterval = -1;
 	private float gravity;
 	private int imageId = 0;
 	private String waterMark;
+	private float momentum;
+	private boolean isColidable;
 	
 	public void setImageId(int imageId){
 		this.imageId = imageId;
@@ -175,9 +177,10 @@ public class Generic implements WorldObject, Terrain, Mobile, JSONizable {
 	public float[] getDirectionVector(long timeChange) {
 		lastInterval = timeChange;
 		float ratio = getRatio(timeChange);
-		directionVector[1] += gravity * ratio;
-				
-		return Algebra.multiplyVectorByConstant(directionVector, ratio);
+		momentum += gravity * ratio;
+		float[] d = Algebra.multiplyVectorByConstant(directionVector, ratio);
+		d[1] += momentum;
+		return d;
 	}
 
 	@Override
@@ -211,7 +214,7 @@ public class Generic implements WorldObject, Terrain, Mobile, JSONizable {
 
 	@Override
 	public boolean isWinning() {
-		return true;
+		return isColidable;
 	}
 
 	@Override
@@ -232,6 +235,11 @@ public class Generic implements WorldObject, Terrain, Mobile, JSONizable {
 	@Override
 	public void setWaterMark(String waterMark) {
 		this.waterMark = waterMark;
+	}
+
+	public void setIsWinning(boolean b) {
+		isColidable = b;
+		
 	}
 
 }

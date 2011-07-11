@@ -31,15 +31,15 @@ public class GameActivity extends Activity {
 		initialize(false);
 	}
 
-	protected void setAnimate (boolean animate){
+	protected void setAnimate(boolean animate) {
 		renderer.setAnimate(animate);
 	}
-	
+
 	protected void onCreate(Bundle savedInstanceState, boolean animate) {
 		super.onCreate(savedInstanceState);
 		initialize(animate);
 	}
-	
+
 	private void initialize(boolean animate) {
 		UTMakerGLSurfaceView view = new UTMakerGLSurfaceView(getApplicationContext());
 		renderer = new UTMRenderer(loadBitmaps(Global.ids), world, animate);
@@ -87,17 +87,20 @@ public class GameActivity extends Activity {
 		final int historySize = ev.getHistorySize();
 		final int pointerCount = ev.getPointerCount();
 
-//		for (int h = 0; h < historySize; h++) {
-//			Logger.debug(getClass(), "At time History: " + ev.getHistoricalEventTime(h));
-//			for (int p = 0; p < pointerCount; p++)
-//				Logger.debug(getClass(), "\tpointer : " + ev.getPointerId(p) + "(" + ev.getHistoricalX(p, h) + "," + ev.getHistoricalY(p, h) + ")");
-//		}
+		// for (int h = 0; h < historySize; h++) {
+		// Logger.debug(getClass(), "At time History: " +
+		// ev.getHistoricalEventTime(h));
+		// for (int p = 0; p < pointerCount; p++)
+		// Logger.debug(getClass(), "\tpointer : " + ev.getPointerId(p) + "(" +
+		// ev.getHistoricalX(p, h) + "," + ev.getHistoricalY(p, h) + ")");
+		// }
 
-//		Logger.debug(getClass(), "At time Present: " + ev.getEventTime());
+		// Logger.debug(getClass(), "At time Present: " + ev.getEventTime());
 		float[][] touch = new float[2][];
 		for (int p = 0; p < pointerCount; p++) {
 			touch[ev.getPointerId(p)] = new float[] { ev.getX(p), ev.getY(p) };
-//			Logger.debug(getClass(), "\tpointer : " + ev.getPointerId(p) + "(" + ev.getX(p) + "," + ev.getY(p) + ")");
+			// Logger.debug(getClass(), "\tpointer : " + ev.getPointerId(p) +
+			// "(" + ev.getX(p) + "," + ev.getY(p) + ")");
 		}
 
 		getRenderer().setTouch(touch);
@@ -122,4 +125,8 @@ public class GameActivity extends Activity {
 		startActivity(new Intent(this, SaveWorldActivity.class));
 	}
 
+	public void setBackgroundTexture(int backgroundTexture) {
+		if (renderer != null)
+			renderer.setBackgroundTexture(backgroundTexture);
+	}
 }

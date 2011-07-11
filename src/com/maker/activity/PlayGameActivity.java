@@ -14,7 +14,7 @@ public class PlayGameActivity extends GameActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		world.setWinningListener(new WinningListener() {
 			@Override
-			public void win(WorldObject w) {
+			public boolean win(WorldObject w, WorldObject worldObject2) {
 				runOnUiThread(new Runnable() {
 					@Override
 					public void run() {
@@ -22,6 +22,7 @@ public class PlayGameActivity extends GameActivity {
 						finish();
 					}
 				});
+				return true;
 			}
 		});
 

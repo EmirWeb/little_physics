@@ -1,5 +1,7 @@
 package com.maker.activity;
 
+import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -9,8 +11,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.maker.Logger;
 import com.maker.R;
 import com.maker.Listeners.WinningListener;
+import com.maker.dialog.FailureDialog;
+import com.maker.dialog.SuccessDialog;
 import com.maker.world.Generic;
 import com.maker.world.World;
 import com.maker.world.WorldObject;
@@ -22,43 +27,33 @@ public class GravityLevel3Activity extends GameActivity {
 
 	private boolean animating;
 	private float distance;
-	private TextView timer;
 	private Button startStop;
-	private Button next;
 	private EditText angle;
 
 	// In degrees
-	public static final float INITIAL_ANGLE = 45;
-	public static final float MAX_ANGLE = 90;
-	
-	public static final float EARTH_GRAVITY = -9.8f;
+	public final float INITIAL_ANGLE = 45;
+	public final float MAX_ANGLE = 90;
+	public final float EARTH_GRAVITY = -9.8f;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		World world = getWorld(-9.8f);
+		World world = getWorld(EARTH_GRAVITY);
 		setWorld(world);
 
 		super.onCreate(savedInstanceState, false);
-
+		setBackgroundTexture(22);
 		View view = getLayoutInflater().inflate(R.layout.gravity_level_1_activity, null, false);
 		
 		TextView description = (TextView) view.findViewById(R.id.description);
-		description.setText("An apple 22 units away from you is falling from a height of 15 units. If you shoot the arrow at an initial speed of 20 units per second, at what angle do you need to fire the arrow? (How relevant is the initial speed of the arrow?). angle: [0, 90].");
+		description.setText("The roadrunner is in an air baloon ");
 		
 		TextView title = (TextView) view.findViewById(R.id.input_title);
 		title.setText("Angle");
 		
-		timer = (TextView) view.findViewById(R.id.timer);
 		angle = (EditText) view.findViewById(R.id.user_input);
 		angle.setText(String.valueOf(INITIAL_ANGLE));
 
 		startStop = (Button) view.findViewById(R.id.start_stop);
-		next = (Button) view.findViewById(R.id.next);
-		next.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-			}
-		});
 
 		startStop.setOnClickListener(new OnClickListener() {
 
@@ -97,7 +92,6 @@ public class GravityLevel3Activity extends GameActivity {
 		
 		World world = getWorld(angleFloat);
 		setWorld(world);
-
 	}
 
 	private World getWorld(float angle) {
@@ -109,6 +103,11 @@ public class GravityLevel3Activity extends GameActivity {
 			WinningTrigger crate = new WinningTrigger(i, -8);
 			crate.setWaterMark("crate");
 			world.add(crate);
+			if (i < 30){
+				crate = new WinningTrigger(i, -9);
+				crate.setWaterMark("crate");
+				world.add(crate);
+			}
 		}
 		
 		final float startx = -10;
@@ -117,57 +116,66 @@ public class GravityLevel3Activity extends GameActivity {
 		final float fallingStartx = 12;
 		final float fallingStarty = 8;
 		
-		final float velocity = 20f;
+		final float velocity = 200f;
 
 		float xVel = (float) (velocity * Math.cos(Math.toRadians(angle)));
 		float yVel = (float) (velocity * Math.sin(Math.toRadians(angle)));
 		
-		Generic arrow = new Generic(EARTH_GRAVITY, new float[] { startx, starty }, new float[] { xVel, yVel });
+		Generic arrow = new Generic(0f, new float[] { startx, starty }, new float[] { xVel, yVel });
 		arrow.setImageId(20);
 		arrow.setWaterMark("ARROW");
 		world.add(arrow);
 		
+		
 		Generic bow = new Generic(0, new float[] { startx - 1, starty }, new float[] { 0, 0 });
 		bow.setImageId(21);
+		bow.setWaterMark("BOW");
 		world.add(bow);
+
+		Generic coyote = new Generic(0, new float[] { startx - 2, starty }, new float[] { 0, 0 });
+		coyote.setImageId(14);
+		coyote.setWaterMark("COYOTE");
+		world.add(coyote);
 		
-		Generic apple = new Generic(EARTH_GRAVITY, new float[] { fallingStartx, fallingStarty }, new float[] { 0, 0 });
-		apple.setImageId(19);
-		apple.setWaterMark("APPLE");
+		Generic apple = new Generic(-2f, new float[] { fallingStartx, fallingStarty }, new float[] { 0, 0 });
+		apple.setImageId(25);
+		apple.setIsWinning(true);
+		apple.setWaterMark("HOT AIR BALLOON");
 		world.add(apple);
 		
 		world.setWinningListener(new WinningListener() {
-
 			@Override
-			public void win(final WorldObject w) {
+			public boolean win(final WorldObject w1, final WorldObject w2) {
 				runOnUiThread(new Runnable() {
-					
-
 					@Override
 					public void run() {
-						float[] pos = w.getPosition().clone();
-						pos[0] -= startx;
-						pos[1] -= starty;
-						
-						distance = pos[0];
-						timer.setText("distance: " + distance);
-
-						
-						String waterMark = w.getWaterMark();							
-						if (waterMark.equals("APPLE"))
-							Toast.makeText(getApplicationContext(), "GOT IT!", Toast.LENGTH_SHORT).show();
-						else
-							Toast.makeText(getApplicationContext(), "FAil", Toast.LENGTH_SHORT).show();
-
-						
-						
+						String waterMark1 = w1.getWaterMark();
+						String waterMark2 = w2.getWaterMark();
+						debug(waterMark1 + " " + waterMark2);
+						if (waterMark2.equals("ARROW") && waterMark1.equals("HOT AIR BALLOON") || waterMark1.equals("ARROW") && waterMark2.equals("HOT AIR BALLOON")){
+							Dialog d = new SuccessDialog(GravityLevel3Activity.this, new OnClickListener() {
+								
+								@Override
+								public void onClick(View v) {
+									startActivity(new Intent(GravityLevel3Activity.this, GravityLevel3Activity.class));
+								}
+							});
+							d.show();
+						}else{
+							Dialog d = new FailureDialog(GravityLevel3Activity.this);
+							d.show();
+						}
 						stop();
 					}
 				});
+				return true;
 			}
 		});
 
 		return world;
 	}
-
+	private void debug(String message){
+		Logger.debug(getClass(), message);
+	}
 }
+

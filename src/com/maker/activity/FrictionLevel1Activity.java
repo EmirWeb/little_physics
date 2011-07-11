@@ -20,31 +20,29 @@ import com.maker.world.World;
 import com.maker.world.WorldObject;
 import com.maker.world.terrain.WinningTrigger;
 
-public class GravityLevel2Activity extends GameActivity {
+public class FrictionLevel1Activity extends GameActivity {
 
 	private boolean animating;
+	private float distance;
 	private Button startStop;
 	private EditText angle;
 
 	// In degrees
 	public final float INITIAL_ANGLE = 45;
 	public final float MAX_ANGLE = 90;
-
 	public final float EARTH_GRAVITY = -9.8f;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		World world = getWorld(-9.8f);
+		World world = getWorld(EARTH_GRAVITY);
 		setWorld(world);
 
 		super.onCreate(savedInstanceState, false);
-		
 		setBackgroundTexture(22);
-
 		View view = getLayoutInflater().inflate(R.layout.gravity_level_1_activity, null, false);
 
 		TextView description = (TextView) view.findViewById(R.id.description);
-		description.setText("Try to get the ball in the basket. The angle interval is [0, 90].");
+		description.setText("The roadrunner is in an air baloon ");
 
 		TextView title = (TextView) view.findViewById(R.id.input_title);
 		title.setText("Angle");
@@ -91,7 +89,6 @@ public class GravityLevel2Activity extends GameActivity {
 
 		World world = getWorld(angleFloat);
 		setWorld(world);
-
 	}
 
 	private World getWorld(float angle) {
@@ -101,76 +98,67 @@ public class GravityLevel2Activity extends GameActivity {
 		World world = new World();
 		for (int i = -15; i < 150; i++) {
 			WinningTrigger crate = new WinningTrigger(i, -8);
-			crate.setWaterMark("GROUND");
+			crate.setWaterMark("crate");
 			world.add(crate);
-			
-			if ( i < 20){
+			if (i < 30) {
 				crate = new WinningTrigger(i, -9);
-				crate.setWaterMark("GROUND");
+				crate.setWaterMark("crate");
 				world.add(crate);
 			}
 		}
+
 		final float startx = -10;
 		final float starty = -7;
-		final float power = 150f;
-		// The coyote is firing a cannon ball at the road runner from 
-		float xPower = (float) (power * Math.cos(Math.toRadians(angle)));
-		float yPower = (float) (power * Math.sin(Math.toRadians(angle)));
 
-		Generic cannonBall = new Generic(EARTH_GRAVITY, new float[] { startx, starty }, new float[] { xPower, yPower });
-		cannonBall.setImageId(18);
-		cannonBall.setWaterMark("CANNONBAL");
-		world.add(cannonBall);
-		
+		final float fallingStartx = 12;
+		final float fallingStarty = 8;
 
-		Generic coyote = new Generic(0, new float[] { startx - 2.5f, starty }, new float[] { 0, 0 });
-		coyote.setIsWinning(false);
+		final float velocity = 200f;
+
+		float xVel = (float) (velocity * Math.cos(Math.toRadians(angle)));
+		float yVel = (float) (velocity * Math.sin(Math.toRadians(angle)));
+
+		Generic arrow = new Generic(0f, new float[] { startx, starty }, new float[] { xVel, yVel });
+		arrow.setImageId(20);
+		arrow.setWaterMark("ARROW");
+		world.add(arrow);
+
+		Generic bow = new Generic(0, new float[] { startx - 1, starty }, new float[] { 0, 0 });
+		bow.setImageId(21);
+		bow.setWaterMark("BOW");
+		world.add(bow);
+
+		Generic coyote = new Generic(0, new float[] { startx - 2, starty }, new float[] { 0, 0 });
 		coyote.setImageId(14);
 		coyote.setWaterMark("COYOTE");
 		world.add(coyote);
-		
-		Generic cannon = new Generic(0, new float[] { startx - 1.5f, starty }, new float[] { 0, 0 });
-		cannon.setIsWinning(false);
-		cannon.setImageId(23);
-		cannon.setWaterMark("CANNON");
-		world.add(cannon);
 
-		
-		Generic roadRunner = new Generic(0, new float[] { 6, -7}, new float[] { 0, 0 });
-		roadRunner.setImageId(16);
-		roadRunner.setIsWinning(true);
-		roadRunner.setWaterMark("ROAD RUNNER");
-		world.add(roadRunner);
-		
-		Generic birdSeed = new Generic(0, new float[] { 7, -7}, new float[] { 0, 0 });
-		birdSeed.setImageId(24);
-		birdSeed.setIsWinning(true);
-		birdSeed.setWaterMark("BIRD SEED");
-		world.add(birdSeed);
-
+		Generic apple = new Generic(-2f, new float[] { fallingStartx, fallingStarty }, new float[] { 0, 0 });
+		apple.setImageId(25);
+		apple.setIsWinning(true);
+		apple.setWaterMark("HOT AIR BALLOON");
+		world.add(apple);
 
 		world.setWinningListener(new WinningListener() {
-
 			@Override
 			public boolean win(final WorldObject w1, final WorldObject w2) {
 				runOnUiThread(new Runnable() {
-
 					@Override
 					public void run() {
 						String waterMark1 = w1.getWaterMark();
 						String waterMark2 = w2.getWaterMark();
 						debug(waterMark1 + " " + waterMark2);
-						if (waterMark2.equals("ROAD RUNNER") && waterMark1.equals("CANNONBAL") || waterMark1.equals("ROAD RUNNER") && waterMark2.equals("CANNONBAL")){
-							Dialog d = new SuccessDialog(GravityLevel2Activity.this, new OnClickListener() {
-								
+						if (waterMark2.equals("ARROW") && waterMark1.equals("HOT AIR BALLOON") || waterMark1.equals("ARROW") && waterMark2.equals("HOT AIR BALLOON")) {
+							Dialog d = new SuccessDialog(FrictionLevel1Activity.this, new OnClickListener() {
+
 								@Override
 								public void onClick(View v) {
-									startActivity(new Intent(GravityLevel2Activity.this, GravityLevel3Activity.class));
+									startActivity(new Intent(FrictionLevel1Activity.this, GravityLevel3Activity.class));
 								}
 							});
 							d.show();
-						}else{
-							Dialog d = new FailureDialog(GravityLevel2Activity.this);
+						} else {
+							Dialog d = new FailureDialog(FrictionLevel1Activity.this);
 							d.show();
 						}
 						stop();
@@ -183,7 +171,7 @@ public class GravityLevel2Activity extends GameActivity {
 		return world;
 	}
 
-	private void debug(String message){
+	private void debug(String message) {
 		Logger.debug(getClass(), message);
 	}
 }

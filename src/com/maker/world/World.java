@@ -28,8 +28,9 @@ public class World implements JSONizable {
 	private int[] highlight = new int[] { 0, 0 };
 	private boolean hasHighLight;
 	private Movable[] touched = new Movable[2];
-	private boolean debuggable = false;
+	private boolean debuggable = true;
 	private long DEBUGGABL_TIME_CHANGE = 10;
+	private boolean stopAnimation;
 
 	public World(WinningListener listener) {
 		this.listener = listener;
@@ -79,7 +80,6 @@ public class World implements JSONizable {
 				return o;
 		}
 		return null;
-
 	}
 
 	public WorldObject getObject(float[] newPosition) {
@@ -137,6 +137,7 @@ public class World implements JSONizable {
 	}
 
 	public LinkedList<WorldObject> getCurrentFrame(boolean animate) {
+		
 		if (!animate) {
 			time = -1;
 			return objects;
@@ -146,7 +147,7 @@ public class World implements JSONizable {
 			time = System.currentTimeMillis();
 		
 		long currentTime = System.currentTimeMillis();
-		long timeChange = (currentTime - time) / 10;
+		long timeChange = (currentTime - time) ;
 
 		if (debuggable)
 			timeChange = DEBUGGABL_TIME_CHANGE;
@@ -157,6 +158,7 @@ public class World implements JSONizable {
 			float[] directionVector = mobile.getDirectionVector(timeChange);			
 			checkCollision(mobile, directionVector, gravity);
 			addToGrid(mobile);
+			Thread.yield();
 		}
 
 		return objects;
@@ -202,14 +204,14 @@ public class World implements JSONizable {
 				if (objectList != null) {
 					for (WorldObject worldObject : objectList) {
 						if (worldObject != object) {
-							radiusComparisons++;
-							if (withinRadius(worldObject, (WorldObject) object, directionVector)) {
+//							radiusComparisons++;
+//							if (withinRadius(worldObject, (WorldObject) object, directionVector)) {
 								SmallestLambdaSet<Collision> c = getCollisionLambda(object, worldObject, directionVector);
 								float l = c.getLambda();
 								if (l != -1)
 									collisions.add(l, c.getSet());
 								comparisons++;
-							}
+//							}
 						}
 					}
 				}
@@ -225,13 +227,21 @@ public class World implements JSONizable {
 				if (h.size() == 1)
 					for (Collision c : h) {
 						accountedCollisions.add(c);
-						manageCollision(c, (WorldObject) object);
+						if (manageCollision(c, (WorldObject) object)){
+							stackCounter--;
+							stopAnimation = true;
+							return;
+						}
 					}
 				else {
 					HashSet<float[]> points = new HashSet<float[]>();
 					for (Collision c : h) {
 						points.add(c.getIntersectionPoint());
-						manageCollision(c, (WorldObject) object);
+						if (manageCollision(c, (WorldObject) object)){
+							stackCounter--;
+							stopAnimation = true;
+							return;
+						}
 					}
 					Collision considerCollision = null;
 					int pointCount = 0;
@@ -322,19 +332,22 @@ public class World implements JSONizable {
 		return radius > distanceWithoutVector && radius > distanceWithVector;
 	}
 
-	private void manageCollision(Collision c, WorldObject w) {
+	private boolean manageCollision(Collision c, WorldObject w) {
 		WorldObject t = c.getObject();
 		if (t instanceof Terrain && ((Terrain) t).isBreakable())
 			removeObject((WorldObject) t);
 		if (t instanceof Terrain && ((Terrain) t).isWinning())
-			win(w);
+			return win(w, t);
+		return false;
 	}
 
-	private void win(WorldObject w) {
+	private boolean win(WorldObject w1, WorldObject w2) {
 		if (listener != null) {
-			listener.win(w);
+			boolean complete = listener.win(w1, w2);
 			listener = null;
+			return complete;
 		}
+		return false;
 	}
 
 	private static SmallestLambdaSet<Collision> getCollisionLambda(Mobile object, WorldObject worldObject, float[] directionVector) {
