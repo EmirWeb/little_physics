@@ -51,13 +51,11 @@ public class FrictionLevel1Activity extends GameActivity {
 		angle.setText(String.valueOf(INITIAL_ANGLE));
 
 		startStop = (Button) view.findViewById(R.id.start_stop);
-
 		startStop.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				animating = !animating;
-
 				if (animating) {
 					String aString = angle.getText().toString();
 					if (aString.equals(""))
@@ -96,15 +94,14 @@ public class FrictionLevel1Activity extends GameActivity {
 			angle = MAX_ANGLE;
 
 		World world = new World();
-		for (int i = -15; i < 150; i++) {
+		for (int i = -15; i < 30; i++) {
 			WinningTrigger crate = new WinningTrigger(i, -8);
 			crate.setWaterMark("crate");
 			world.add(crate);
-			if (i < 30) {
-				crate = new WinningTrigger(i, -9);
-				crate.setWaterMark("crate");
-				world.add(crate);
-			}
+
+			crate = new WinningTrigger(i, -9);
+			crate.setWaterMark("crate");
+			world.add(crate);
 		}
 
 		final float startx = -10;
@@ -118,22 +115,22 @@ public class FrictionLevel1Activity extends GameActivity {
 		float xVel = (float) (velocity * Math.cos(Math.toRadians(angle)));
 		float yVel = (float) (velocity * Math.sin(Math.toRadians(angle)));
 
-		Generic arrow = new Generic(0f, new float[] { startx, starty }, new float[] { xVel, yVel });
-		arrow.setImageId(20);
-		arrow.setWaterMark("ARROW");
-		world.add(arrow);
+		float friction = -5;
+		float force = angle;
+		float finalForce = Math.max(friction + force, 0);
 
-		Generic bow = new Generic(0, new float[] { startx - 1, starty }, new float[] { 0, 0 });
-		bow.setImageId(21);
-		bow.setWaterMark("BOW");
-		world.add(bow);
+		Generic box = new Generic(new float[] { 0, 0 }, new float[] { startx - 1, starty + 0.01f }, new float[] { finalForce, 0 });
+		box.setImageId(1);
+		box.setIsWinning(true);
+		box.setWaterMark("BOX");
+		world.add(box);
 
-		Generic coyote = new Generic(0, new float[] { startx - 2, starty }, new float[] { 0, 0 });
+		Generic coyote = new Generic(new float[] { 0, 0 }, new float[] { startx - 3, starty + 0.01f }, new float[] { finalForce, 0 });
 		coyote.setImageId(14);
 		coyote.setWaterMark("COYOTE");
 		world.add(coyote);
 
-		Generic apple = new Generic(-2f, new float[] { fallingStartx, fallingStarty }, new float[] { 0, 0 });
+		Generic apple = new Generic(new float[] { 0, -2f }, new float[] { fallingStartx, fallingStarty }, new float[] { 0, 0 });
 		apple.setImageId(25);
 		apple.setIsWinning(true);
 		apple.setWaterMark("HOT AIR BALLOON");
@@ -148,9 +145,8 @@ public class FrictionLevel1Activity extends GameActivity {
 						String waterMark1 = w1.getWaterMark();
 						String waterMark2 = w2.getWaterMark();
 						debug(waterMark1 + " " + waterMark2);
-						if (waterMark2.equals("ARROW") && waterMark1.equals("HOT AIR BALLOON") || waterMark1.equals("ARROW") && waterMark2.equals("HOT AIR BALLOON")) {
+						if (waterMark2.equals("BOX") && waterMark1.equals("HOT AIR BALLOON") || waterMark1.equals("BOX") && waterMark2.equals("HOT AIR BALLOON")) {
 							Dialog d = new SuccessDialog(FrictionLevel1Activity.this, new OnClickListener() {
-
 								@Override
 								public void onClick(View v) {
 									startActivity(new Intent(FrictionLevel1Activity.this, GravityLevel3Activity.class));

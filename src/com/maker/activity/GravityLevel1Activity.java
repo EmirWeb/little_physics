@@ -97,18 +97,18 @@ public class GravityLevel1Activity extends GameActivity {
 			world.add(crate);
 		}
 
-		Generic anvil = new Generic(EARTH_GRAVITY, new float[] { 3, height }, new float[] { 0, 0 });
+		Generic anvil = new Generic(new float[] {0,EARTH_GRAVITY}, new float[] { 3, height }, new float[] { 0, 0 });
 		anvil.setImageId(15);
 		anvil.setWaterMark("ANVIL");
 		world.add(anvil);
 		
-		Generic roadRunner = new Generic(0, new float[] { -10, userToWorldHeight(0.1f) }, new float[] { 50f, 0 });
+		Generic roadRunner = new Generic(new float[] {0,0}, new float[] { -10, userToWorldHeight(0.1f) }, new float[] { 5f, 0 });
 		roadRunner.setImageId(16);
 		roadRunner.setIsWinning(true);
 		roadRunner.setWaterMark("ROAD RUNNER");
 		world.add(roadRunner);
 		
-		Generic coyote = new Generic(0, new float[] { 4.5f, height }, new float[] { 0, 0 });
+		Generic coyote = new Generic(new float[] {0,0}, new float[] { 4.5f, height }, new float[] { 0, 0 });
 		coyote.setIsWinning(false);
 		coyote.setImageId(14);
 		coyote.setWaterMark("COYOTE");

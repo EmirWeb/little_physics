@@ -13,24 +13,24 @@ public class Generic implements WorldObject, Terrain, Mobile, JSONizable {
 	private Line[] lines;
 	private float[] directionVector = new float[] { 0, 0 };
 	private int id;
-	private final float frame = 1000;
+	private final float frame = 100;
 	private float lastInterval = -1;
-	private float gravity;
+	private float[] gravity;
 	private int imageId = 0;
 	private String waterMark;
-	private float momentum;
 	private boolean isColidable;
-	
-	public void setImageId(int imageId){
+
+	private float[] momentum = new float[] { 0, 0 };
+	private long momentumTime;
+
+	public void setImageId(int imageId) {
 		this.imageId = imageId;
 	}
 
-	public Generic(float gravity, float[] position, float[] fs) {
-		if (gravity > 0)
-			gravity = -gravity;
-		this.gravity = gravity;
+	public Generic(float[] gravity, float[] position, float[] fs) {
+		this.gravity = gravity.clone();
 		this.position = position;
-		directionVector = fs;
+		momentum = fs;
 		lines = getLines();
 	}
 
@@ -66,8 +66,8 @@ public class Generic implements WorldObject, Terrain, Mobile, JSONizable {
 
 	@Override
 	public WorldObject New(float x, float y) {
-		FallingObject fallingObject = new FallingObject(gravity, new float[] { x, y }, directionVector.clone());
-		return fallingObject;
+		Generic generic = new Generic(gravity.clone(), new float[] { x, y }, directionVector.clone());
+		return generic;
 	}
 
 	@Override
@@ -175,11 +175,14 @@ public class Generic implements WorldObject, Terrain, Mobile, JSONizable {
 
 	@Override
 	public float[] getDirectionVector(long timeChange) {
+		if (waterMark != null && waterMark.equals("ANVIL") )
+			timeChange = timeChange + 1;
 		lastInterval = timeChange;
 		float ratio = getRatio(timeChange);
-		momentum += gravity * ratio;
-		float[] d = Algebra.multiplyVectorByConstant(directionVector, ratio);
-		d[1] += momentum;
+		momentum = Algebra.add(momentum, Algebra.multiplyVectorByConstant(gravity, ratio));
+		float[] d = Algebra.multiplyVectorByConstant(momentum, ratio);
+		
+
 		return d;
 	}
 
@@ -239,7 +242,7 @@ public class Generic implements WorldObject, Terrain, Mobile, JSONizable {
 
 	public void setIsWinning(boolean b) {
 		isColidable = b;
-		
+
 	}
 
 }

@@ -20,6 +20,9 @@
 		<activity android:name=".activity.GravityLevel2Activity"
 			android:label="@string/app_name" android:screenOrientation="landscape"
 			android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
+			<activity android:name=".activity.FrictionLevel1Activity"
+			android:label="@string/app_name" android:screenOrientation="landscape"
+			android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
 		<activity android:name=".activity.LandingActivity"
 			android:label="@string/app_name" android:screenOrientation="landscape"
 			android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
