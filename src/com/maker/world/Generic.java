@@ -175,11 +175,13 @@ public class Generic implements WorldObject, Terrain, Mobile, JSONizable {
 
 	@Override
 	public float[] getDirectionVector(long timeChange) {
-		if (waterMark != null && waterMark.equals("ANVIL") )
-			timeChange = timeChange + 1;
+//		if (waterMark != null && waterMark.equals("ANVIL") )
+//			timeChange = timeChange + 1;
 		lastInterval = timeChange;
 		float ratio = getRatio(timeChange);
+		// This calculates the amount of gravity
 		momentum = Algebra.add(momentum, Algebra.multiplyVectorByConstant(gravity, ratio));
+		// This returns the 
 		float[] d = Algebra.multiplyVectorByConstant(momentum, ratio);
 		
 

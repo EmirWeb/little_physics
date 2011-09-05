@@ -15,6 +15,7 @@ import com.maker.R;
 import com.maker.Listeners.WinningListener;
 import com.maker.dialog.FailureDialog;
 import com.maker.dialog.SuccessDialog;
+import com.maker.utilities.Algebra;
 import com.maker.world.Generic;
 import com.maker.world.World;
 import com.maker.world.WorldObject;
@@ -115,10 +116,13 @@ public class GravityLevel2Activity extends GameActivity {
 		final float starty = -7;
 		final float power = 15f;
 
-		float xPower = (float) (power * Math.cos(Math.toRadians(angle)));
-		float yPower = (float) (power * Math.sin(Math.toRadians(angle)));
+		float xDirection = (float) (Math.cos(Math.toRadians(angle)));
+		float yDirection = (float) (Math.sin(Math.toRadians(angle)));
+		float[] direction = new float[] { xDirection, yDirection };
+		direction = Algebra.normalize(direction);
+		direction = Algebra.multiplyVectorByConstant(direction, power);
 
-		Generic cannonBall = new Generic(new float[] { 0, EARTH_GRAVITY }, new float[] { startx, starty }, new float[] { xPower, yPower });
+		Generic cannonBall = new Generic(new float[] { 0, EARTH_GRAVITY }, new float[] { startx, starty },direction);
 		cannonBall.setImageId(18);
 		cannonBall.setWaterMark("CANNONBAL");
 		world.add(cannonBall);
